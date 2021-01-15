@@ -1,0 +1,23 @@
+default:
+  image: ubuntu:stable
+
+image: debian:unstable
+ 
+before_script:
+  - apt update -qq
+  - apt install -y -qq build-essential autoconf automake pkg-config libtool m4 autoconf-archive libxml2-utils libglib2.0-dev
+ 
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - ./autogen.sh
+    - make
+
+test:
+  stage: test
+  script:
+    - make check
