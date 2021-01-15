@@ -1,5 +1,5 @@
 default:
-  image: ubuntu:stable
+  image: ubuntu:latest
 
 before_script:
   - apt update -qq
