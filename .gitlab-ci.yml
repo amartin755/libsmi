@@ -1,9 +1,9 @@
-default:
-  image: ubuntu:latest
+#image: ubuntu:latest
+image: gcc
 
 before_script:
   - apt-get update -qq
-  - apt-get install -y -qq autoconf automake pkg-config libtool m4
+  - apt-get install -y -qq make gcc flex bison autoconf automake pkg-config libtool m4
  
 stages:
   - build
