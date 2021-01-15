@@ -6,15 +6,10 @@ before_script:
  
 stages:
   - build
-  - test
 
 build:
   stage: build
   script:
     - ./autogen.sh
     - make
-
-test:
-  stage: test
-  script:
     - make check
