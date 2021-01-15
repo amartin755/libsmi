@@ -2,8 +2,8 @@ default:
   image: ubuntu:latest
 
 before_script:
-  - apt update -qq
-  - apt install -y -qq build-essential autoconf automake pkg-config libtool m4 autoconf-archive libxml2-utils libglib2.0-dev
+  - apt-get update -qq
+  - apt-get install -y -qq build-essential autoconf automake pkg-config libtool m4
  
 stages:
   - build
