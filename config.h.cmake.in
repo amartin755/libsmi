@@ -1,0 +1,153 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* "" */
+#cmakedefine BACKEND_SMI
+
+/* "" */
+#cmakedefine BACKEND_SMING
+
+/* "" */
+#cmakedefine BACKEND_YANG
+
+/* The default error level at libsmi initialization. */
+#cmakedefine DEFAULT_ERRORLEVEL @DEFAULT_ERRORLEVEL@
+
+/* The full pathname of the global configuration file. */
+#cmakedefine DEFAULT_GLOBALCONFIG "@DEFAULT_GLOBALCONFIG@"
+
+/* The default search path to lookup SMI module files. */
+#cmakedefine DEFAULT_SMIPATH "@DEFAULT_SMIPATH@"
+
+/* The basename of the per-user configuration file searched in $HOME. */
+#cmakedefine DEFAULT_USERCONFIG "@DEFAULT_USERCONFIG@"
+
+/* The default path separator character. */
+#cmakedefine DIR_SEPARATOR '@DIR_SEPARATOR@'
+
+/* Define to 1 if you have the `asnprintf' function. */
+#cmakedefine HAVE_ASNPRINTF
+
+/* Define to 1 if you have the `asprintf' function. */
+#cmakedefine HAVE_ASPRINTF
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#cmakedefine HAVE_DLFCN_H
+
+/* "" */
+#cmakedefine HAVE_DMALLOC_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <limits.h> header file. */
+#cmakedefine HAVE_LIMITS_H
+
+/* Define to 1 if you have the <pwd.h> header file. */
+#cmakedefine HAVE_PWD_H
+
+/* Define to 1 if you have the <regex.h> header file. */
+#cmakedefine HAVE_REGEX_H
+
+/* Define to 1 if you have the `snprintf' function. */
+#cmakedefine HAVE_SNPRINTF
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#cmakedefine HAVE_STDIO_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#cmakedefine HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#cmakedefine HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#cmakedefine HAVE_STRING_H
+
+/* Define to 1 if you have the `strtoll' function. */
+#cmakedefine HAVE_STRTOLL
+
+/* Define to 1 if you have the `strtoq' function. */
+#cmakedefine HAVE_STRTOQ
+
+/* Define to 1 if you have the `strtoull' function. */
+#cmakedefine HAVE_STRTOULL
+
+/* Define to 1 if you have the `strtouq' function. */
+#cmakedefine HAVE_STRTOUQ
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#cmakedefine HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#cmakedefine HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the `timegm' function. */
+#cmakedefine HAVE_TIMEGM
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H
+
+/* Define to 1 if you have the `vasnprintf' function. */
+#cmakedefine HAVE_VASNPRINTF
+
+/* Define to 1 if you have the `vasprintf' function. */
+#cmakedefine HAVE_VASPRINTF
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#cmakedefine HAVE_VSNPRINTF
+
+/* The signed 64 bit integer format conversion specification string. */
+#cmakedefine INT64_FORMAT "@INT64_FORMAT@"
+
+/* The signed 64 bit integer maximum value. */
+#cmakedefine LIBSMI_INT64_MAX @LIBSMI_INT64_MAX@
+
+/* The unsigned 64 bit integer minimum value. */
+#cmakedefine LIBSMI_INT64_MIN @LIBSMI_INT64_MIN@
+
+/* The unsigned 64 bit integer maximum value. */
+#cmakedefine LIBSMI_UINT64_MAX @LIBSMI_UINT64_MAX@
+
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
+#cmakedefine LT_OBJDIR
+
+/* The maximum module import recursion depth. */
+#cmakedefine MAX_LEX_DEPTH @MAX_LEX_DEPTH@
+
+/* Name of package */
+#cmakedefine PACKAGE "@PACKAGE@"
+
+/* Define to the address where bug reports for this package should be sent. */
+#cmakedefine PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+
+/* Define to the full name of this package. */
+#cmakedefine PACKAGE_NAME "@PACKAGE_NAME@"
+
+/* Define to the full name and version of this package. */
+#cmakedefine PACKAGE_STRING "@PACKAGE_STRING@"
+
+/* Define to the one symbol short name of this package. */
+#cmakedefine PACKAGE_TARNAME "@PACKAGE_TARNAME@"
+
+/* Define to the home page for this package. */
+#cmakedefine PACKAGE_URL "@PACKAGE_URL@"
+
+/* Define to the version of this package. */
+#cmakedefine PACKAGE_VERSION "@PACKAGE_VERSION@"
+
+/* The default path separator character. */
+#cmakedefine PATH_SEPARATOR '@PATH_SEPARATOR@'
+
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
+#cmakedefine STDC_HEADERS
+
+/* The unsigned 64 bit integer format conversion specification string. */
+#cmakedefine UINT64_FORMAT "@UINT64_FORMAT@"
+
+/* Version number of package */
+#cmakedefine VERSION "@PROJECT_VERSION@"

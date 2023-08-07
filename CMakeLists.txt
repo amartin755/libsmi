@@ -1,0 +1,173 @@
+###############################################################################
+cmake_minimum_required (VERSION 3.13)
+
+project (libsmi VERSION 0.5.0
+                 DESCRIPTION "A LIBRARY FOR SMI MANAGEMENT INFORMATION"
+                 LANGUAGES C)
+###############################################################################
+
+set (LIBTOOL_VERSION 2)
+set (LIBTOOL_REVISION 27)
+set (LIBTOOL_AGE 0)
+set (VERSION_STRING "${PROJECT_VERSION}")
+set (VERSION_LIBTOOL "${LIBTOOL_VERSION}:${LIBTOOL_REVISION}:${LIBTOOL_AGE}")
+set (VERSION "${PROJECT_VERSION}")
+set (LIBSMI_MAJOR ${PROJECT_VERSION_MAJOR})
+set (LIBSMI_MINOR ${PROJECT_VERSION_MINOR})
+set (LIBSMI_PATCHLEVEL ${PROJECT_VERSION_PATCH})
+
+
+# build options
+###############################################################################
+set (DEFAULT_ERRORLEVEL 3)
+set (MAX_LEX_DEPTH 30)
+option (BACKEND_SMI "enable/disable SMIv1/v2 parser support, default enabled" ON)
+option (BACKEND_YANG "enable/disable YANG parser support, default enabled" ON)
+option (BACKEND_SMING "enable/disable SMIng parser support, default disabled" OFF)
+if (NOT DIR_SEPARATOR)
+    if (WIN32)
+        set (DIR_SEPARATOR "\\")
+    else()
+        set (DIR_SEPARATOR "/")
+    endif()
+endif()
+if (NOT PATH_SEPARATOR)
+    if (WIN32)
+        set (PATH_SEPARATOR ";")
+    else()
+        set (PATH_SEPARATOR ":")
+    endif()
+endif()
+if (NOT PREFIX)
+    if (NOT WIN32)
+        set (PREFIX "${DIR_SEPARATOR}usr${DIR_SEPARATOR}local")
+    else()
+        set (PREFIX "c:${DIR_SEPARATOR}smi")
+    endif()
+endif()
+if (NOT DEFAULT_GLOBALCONFIG)
+    if (NOT WIN32)
+        include (GNUInstallDirs)
+        set (DEFAULT_GLOBALCONFIG "${DIR_SEPARATOR}${CMAKE_INSTALL_SYSCONFDIR}${DIR_SEPARATOR}smi.conf")
+    else()
+        set (DEFAULT_GLOBALCONFIG "${PREFIX}${DIR_SEPARATOR}smi${DIR_SEPARATOR}smi.conf")
+    endif()
+endif()
+if (NOT DEFAULT_USERCONFIG)
+    set (DEFAULT_USERCONFIG ".smirc")
+endif()
+set (MIBDIR "${PREFIX}${DIR_SEPARATOR}share${DIR_SEPARATOR}mibs")
+set (PIBDIR "${PREFIX}${DIR_SEPARATOR}share${DIR_SEPARATOR}pibs")
+set (YANGDIR "${PREFIX}${DIR_SEPARATOR}share${DIR_SEPARATOR}yang")
+if (NOT DEFAULT_SMIPATH)
+    set (DEFAULT_MIBPATH  "${MIBDIR}/ietf${PATH_SEPARATOR}${MIBDIR}/iana${PATH_SEPARATOR}${MIBDIR}/irtf${PATH_SEPARATOR}${MIBDIR}/site${PATH_SEPARATOR}${MIBDIR}/jacobs${PATH_SEPARATOR}${MIBDIR}/tubs")
+    set (DEFAULT_PIBPATH  "${PIBDIR}${DIR_SEPARATOR}ietf${PATH_SEPARATOR}${PIBDIR}${DIR_SEPARATOR}site${PATH_SEPARATOR}${PIBDIR}${DIR_SEPARATOR}tubs")
+    set (DEFAULT_YANGPATH "${YANGDIR}${DIR_SEPARATOR}ietf${PATH_SEPARATOR}${YANGDIR}${DIR_SEPARATOR}iana${PATH_SEPARATOR}${YANGDIR}${DIR_SEPARATOR}site")
+
+    set (DEFAULT_SMIPATH "${DEFAULT_MIBPATH}${PATH_SEPARATOR}${DEFAULT_PIBPATH}${PATH_SEPARATOR}${DEFAULT_YANGPATH}")
+endif()
+
+# check dependencies
+###############################################################################
+find_package (BISON REQUIRED)
+find_package (FLEX REQUIRED)
+
+# config
+###############################################################################
+include (CheckFunctionExists)
+check_function_exists (strtoll HAVE_STRTOLL)
+check_function_exists (strtoull HAVE_STRTOULL)
+check_function_exists (strtoq HAVE_STRTOQ)
+check_function_exists (strtouq HAVE_STRTOUQ)
+check_function_exists (timegm HAVE_TIMEGM)
+check_function_exists (vsnprintf HAVE_VSNPRINTF)
+check_function_exists (snprintf HAVE_SNPRINTF)
+check_function_exists (asprintf HAVE_ASPRINTF)
+check_function_exists (asnprintf HAVE_ASNPRINTF)
+check_function_exists (vasprintf HAVE_VASPRINTF)
+check_function_exists (vasnprintf HAVE_VASNPRINTF)
+include (CheckIncludeFile)
+include (CheckIncludeFiles)
+check_include_file ("pwd.h" HAVE_PWD_H)
+check_include_file ("unistd.h" HAVE_UNISTD_H)
+check_include_file ("regex.h" HAVE_REGEX_H)
+check_include_file ("stdint.h" HAVE_STDINT_H)
+check_include_file ("limits.h" HAVE_LIMITS_H)
+check_include_file ("dlfcn.h" HAVE_DLFCN_H)
+check_include_file ("inttypes.h" HAVE_INTTYPES_H)
+check_include_file ("stdio.h" HAVE_STDIO_H)
+check_include_file ("stdlib.h" HAVE_STDLIB_H)
+check_include_file ("strings.h" HAVE_STRINGS_H)
+check_include_file ("string.h" HAVE_STRING_H)
+check_include_file ("sys/stat.h" HAVE_SYS_STAT_H)
+check_include_file ("sys/types.h" HAVE_SYS_TYPES_H)
+check_include_files("stdlib.h;stdarg.h;string.h;float.h" STDC_HEADERS)
+
+# imitate the strange 64bit logic of configure.ac
+include(CheckTypeSize)
+check_type_size("long long" SIZEOF_LONG_LONG)
+check_type_size("long" SIZEOF_LONG)
+if(SIZEOF_LONG_LONG EQUAL "8")
+  set(INT64_T "long long")
+  set (UINT64_FORMAT "%llu")
+  set (INT64_FORMAT "%lld")
+elseif(SIZEOF_LONG EQUAL "8")
+  set(INT64_T "long")
+  set (UINT64_FORMAT "%lu")
+  set (UINT64_FORMAT "%ld")
+else()
+  message(FATAL_ERROR "Can't find suitable 64 bit type")
+endif()
+message(STATUS "Found 64 bit type: ${INT64_T}")
+set (LIBSMI_INT64_MAX 9223372036854775807LL)
+set (LIBSMI_INT64_MIN -9223372036854775807LL)
+set (LIBSMI_UINT64_MAX 18446744073709551615ULL)
+set (UINT64_TYPE "unsigned ${INT64_T}")
+set (INT64_TYPE "${INT64_T}")
+
+configure_file (config.h.cmake.in config.h)
+configure_file (lib/smi.h.in smi.h)
+
+# main library target
+###############################################################################
+add_library (smi SHARED)
+include_directories (${CMAKE_CURRENT_BINARY_DIR})
+include_directories (lib)
+
+BISON_TARGET(smiparser lib/parser-smi.y ${CMAKE_CURRENT_BINARY_DIR}/parser-smi.c
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-smi.tab.h
+    COMPILE_FLAGS "-t -psmi")
+BISON_TARGET(smingparser lib/parser-sming.y ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.c 
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.tab.h 
+    COMPILE_FLAGS "-t -psming")
+BISON_TARGET(yangparser lib/parser-yang.y ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.c 
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.tab.h 
+    COMPILE_FLAGS "-t -pyang")
+FLEX_TARGET(smiscanner lib/scanner-smi.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-smi.c
+    COMPILE_FLAGS "-Cfe -Psmi")
+FLEX_TARGET(smingscanner lib/scanner-sming.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-sming.c
+    COMPILE_FLAGS "-Cfe -Psming")
+FLEX_TARGET(yangscanner lib/scanner-yang.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-yang.c
+    COMPILE_FLAGS "-Cfe -Pyang")
+ADD_FLEX_BISON_DEPENDENCY (smiscanner smiparser)
+
+target_sources (smi PRIVATE
+    lib/common.c
+    lib/error.c
+    lib/util.c
+    lib/snprintf.c
+    lib/smi.c
+    lib/smi-data.c
+    lib/smi-check.c
+    lib/yang.c
+    lib/yang-data.c
+    lib/yang-check.c
+    lib/yang-complex-types.c
+    lib/smi2yang.c
+    ${BISON_smiparser_OUTPUTS}
+    ${BISON_smingparser_OUTPUTS}
+    ${BISON_yangparser_OUTPUTS}
+    ${FLEX_smiscanner_OUTPUTS}
+    ${FLEX_smingscanner_OUTPUTS}
+    ${FLEX_yangscanner_OUTPUTS}
+)
