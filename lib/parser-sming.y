@@ -20,7 +20,6 @@
     
 #ifdef BACKEND_SMING
 
-#define _ISOC99_SOURCE
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -349,7 +348,7 @@ static void createBitsValue(SmiValue *valuePtr, Type *typePtr)
  * We call the parser from within the parser when IMPORTing modules,
  * hence we need reentrant parser code. This is a bison feature.
  */
-%pure_parser
+%define api.pure
 
 
 
@@ -1550,7 +1549,7 @@ identityStatement:	identityKeyword sep lcIdentifier
 			referenceStatement_stmtsep_01
 			{
 				setIdentityReference(identityPtr, $14, 
-									 thisParserPtr)
+									 thisParserPtr);
 			}
 			'}' optsep ';'
 			{

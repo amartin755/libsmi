@@ -20,7 +20,6 @@
     
 #ifdef BACKEND_YANG
 
-#define _ISOC99_SOURCE
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -39,6 +38,7 @@
 #include "parser-yang.h"
 #include "scanner-yang.h"
 #include "yang-complex-types.h"
+#include "yang-check.h"
 #include "util.h"
 #include "error.h"
     
@@ -268,7 +268,7 @@ checkDate(Parser *parserPtr, char *date)
  * We call the parser from within the parser when IMPORTing modules,
  * hence we need reentrant parser code. This is a bison feature.
  */
-%pure_parser
+%define api.pure
 
 /*
  * The attributes.

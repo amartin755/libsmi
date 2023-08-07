@@ -16,7 +16,7 @@
 
 #include "smi-data.h"
 #include "errormacros.h" /* list of error macros generated from error.c */
-
+#include "smi-check.h"
 
 
 #ifdef yyerror

@@ -164,6 +164,8 @@ int removeYangNode(_YangNode* target, _YangNode* child);
 
 _YangModuleInfo *createModuleInfo(_YangNode *modulePtr);
 
+void createIdentifierRef(_YangNode *node, char* prefix, char* ident);
+
 void createTypeInfo(_YangNode *node);
 
 _YangNode *findYangModuleByName(const char *modulename, char* revision);

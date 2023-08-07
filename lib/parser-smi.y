@@ -1287,7 +1287,7 @@ checkDate(Parser *parserPtr, char *date)
  * We call the parser from within the parser when IMPORTing modules,
  * hence we need reentrant parser code. This is a bison feature.
  */
-%pure_parser
+%define api.pure
 
 
 
