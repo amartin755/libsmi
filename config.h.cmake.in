@@ -66,6 +66,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #cmakedefine HAVE_STRING_H
 
+/* Define to 1 if the win.h header file is present. */
+#cmakedefine HAVE_WIN_H
+
 /* Define to 1 if you have the `strtoll' function. */
 #cmakedefine HAVE_STRTOLL
 

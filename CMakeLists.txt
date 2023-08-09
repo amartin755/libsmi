@@ -26,7 +26,7 @@ option (BACKEND_YANG "enable/disable YANG parser support, default enabled" ON)
 option (BACKEND_SMING "enable/disable SMIng parser support, default disabled" OFF)
 if (NOT DIR_SEPARATOR)
     if (WIN32)
-        set (DIR_SEPARATOR "\\")
+        set (DIR_SEPARATOR "\\\\")
     else()
         set (DIR_SEPARATOR "/")
     endif()
@@ -67,6 +67,18 @@ if (NOT DEFAULT_SMIPATH)
     set (DEFAULT_SMIPATH "${DEFAULT_MIBPATH}${PATH_SEPARATOR}${DEFAULT_PIBPATH}${PATH_SEPARATOR}${DEFAULT_YANGPATH}")
 endif()
 
+# compiler settings
+###############################################################################
+if (MSVC)
+    # only include minimum windows dependencies
+    add_compile_definitions (WIN32_LEAN_AND_MEAN)
+    # suppress warnings about unsafe strncpy and friends
+    add_compile_definitions (_CRT_SECURE_NO_WARNINGS)
+    # disable warning about depracated POSIX symbols
+    add_compile_options (/wd4996)
+
+endif()
+
 # check dependencies
 ###############################################################################
 find_package (BISON REQUIRED)
@@ -80,12 +92,16 @@ check_function_exists (strtoull HAVE_STRTOULL)
 check_function_exists (strtoq HAVE_STRTOQ)
 check_function_exists (strtouq HAVE_STRTOUQ)
 check_function_exists (timegm HAVE_TIMEGM)
+if (MSVC)
+	set (CMAKE_REQUIRED_LIBRARIES "legacy_stdio_definitions.lib")
+endif ()
 check_function_exists (vsnprintf HAVE_VSNPRINTF)
 check_function_exists (snprintf HAVE_SNPRINTF)
 check_function_exists (asprintf HAVE_ASPRINTF)
 check_function_exists (asnprintf HAVE_ASNPRINTF)
 check_function_exists (vasprintf HAVE_VASPRINTF)
 check_function_exists (vasnprintf HAVE_VASNPRINTF)
+set (CMAKE_REQUIRED_LIBRARIES "")
 include (CheckIncludeFile)
 include (CheckIncludeFiles)
 check_include_file ("pwd.h" HAVE_PWD_H)
@@ -124,6 +140,21 @@ set (LIBSMI_INT64_MIN -9223372036854775807LL)
 set (LIBSMI_UINT64_MAX 18446744073709551615ULL)
 set (UINT64_TYPE "unsigned ${INT64_T}")
 set (INT64_TYPE "${INT64_T}")
+
+# windows specific tweaks
+if (WIN32)
+#    set (HAVE_WIN_H 1)
+    if (MSVC)
+        add_compile_definitions (strcasecmp=_stricmp)
+#        add_compile_definitions (isatty=_isatty)
+#        add_compile_definitions (fileno=_fileno)
+    endif ()
+    if (NOT HAVE_UNISTD_H)
+        add_compile_definitions (F_OK=00)
+        add_compile_definitions (W_OK=02)
+        add_compile_definitions (R_OK=04)
+    endif()
+endif()
 
 configure_file (config.h.cmake.in config.h)
 configure_file (lib/smi.h.in smi.h)
