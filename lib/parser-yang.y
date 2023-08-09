@@ -56,7 +56,7 @@
 #define DEBUG
 
 #ifdef DEBUG 
-#define debug(args...) fprintf (stderr, args);
+#define debug(args,...) fprintf (stderr, args);
 #else
 #define debug
 #endif
