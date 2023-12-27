@@ -143,7 +143,6 @@ set (INT64_TYPE "${INT64_T}")
 
 # windows specific tweaks
 if (WIN32)
-#    set (HAVE_WIN_H 1)
     if (MSVC)
         add_compile_definitions (strcasecmp=_stricmp)
 #        add_compile_definitions (isatty=_isatty)
@@ -154,6 +153,7 @@ if (WIN32)
         add_compile_definitions (W_OK=02)
         add_compile_definitions (R_OK=04)
     endif()
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
 configure_file (config.h.cmake.in config.h)
