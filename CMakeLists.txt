@@ -202,3 +202,6 @@ target_sources (smi PRIVATE
     ${FLEX_smingscanner_OUTPUTS}
     ${FLEX_yangscanner_OUTPUTS}
 )
+
+set_target_properties (smi PROPERTIES PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/smi.h;lib/yang.h")
+install (TARGETS smi PUBLIC_HEADER DESTINATION include)
