@@ -21,6 +21,7 @@ set (LIBSMI_PATCHLEVEL ${PROJECT_VERSION_PATCH})
 ###############################################################################
 set (DEFAULT_ERRORLEVEL 3)
 set (MAX_LEX_DEPTH 30)
+option (BUILD_STATIC_LIB "Build static library instead of dynamic (shared object or dll)" ON)
 option (BACKEND_SMI "enable/disable SMIv1/v2 parser support, default enabled" ON)
 option (BACKEND_YANG "enable/disable YANG parser support, default enabled" ON)
 option (BACKEND_SMING "enable/disable SMIng parser support, default disabled" OFF)
@@ -161,7 +162,11 @@ configure_file (lib/smi.h.in smi.h)
 
 # main library target
 ###############################################################################
-add_library (smi SHARED)
+if (NOT BUILD_STATIC_LIB)
+    add_library (smi SHARED)
+else ()
+    add_library (smi STATIC)
+endif ()
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 include_directories (lib)
 
