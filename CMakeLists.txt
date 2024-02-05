@@ -82,6 +82,24 @@ endif()
 
 # check dependencies
 ###############################################################################
+# on windows we download flex and bison first
+if (WIN32)
+    include (FetchContent)
+
+    # Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+        cmake_policy(SET CMP0135 NEW)
+    endif()
+    FetchContent_Declare (
+        flexbison
+        URL      https://github.com/lexxmark/winflexbison/releases/download/v2.5.25/win_flex_bison-2.5.25.zip
+        URL_HASH SHA256=8d324b62be33604b2c45ad1dd34ab93d722534448f55a16ca7292de32b6ac135
+    )
+    FetchContent_MakeAvailable (flexbison)
+    find_program (BISON_EXECUTABLE NAMES bison win-bison win_bison PATHS "${flexbison_SOURCE_DIR}")
+    find_program (FLEX_EXECUTABLE NAMES flex win-flex win_flex PATHS "${flexbison_SOURCE_DIR}")
+endif()
+
 find_package (BISON REQUIRED)
 find_package (FLEX REQUIRED)
 
