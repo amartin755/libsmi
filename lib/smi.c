@@ -70,7 +70,7 @@ static void getModulenameAndName(const char *arg1, const char *arg2,
 				 char **module, char **name)
 {
     char	    *p;
-    int		    l;
+    size_t		 l;
 
     if ((!arg1) && (!arg2)) {
 	*module = NULL;
@@ -2454,7 +2454,7 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 			    1 + i,
 			    smiValuePtr->value.unsigned32);
 		if (s) {
-		    for (j = strlen(s) - 1; i > 0; i--, j--) {
+		    for (j = (int)strlen(s) - 1; i > 0; i--, j--) {
 			s[j] = s[j-1];
 		    }
 		    s[j] = '.';
@@ -2493,7 +2493,7 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 			    1 + i,
 			    smiValuePtr->value.unsigned64);
 		if (s) {
-		    for (j = strlen(s) - 1; i > 0; i--, j--) {
+		    for (j = (int)strlen(s) - 1; i > 0; i--, j--) {
 			s[j] = s[j-1];
 		    }
 		    s[j] = '.';
@@ -2511,11 +2511,11 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 	    smiAsprintf(&s, f, smiValuePtr->value.unsigned64);
 	} else if (smiTypePtr->format[0] == 'b') {
 	    for (i = 64 - 1;
-		 i > 0 && !(smiValuePtr->value.unsigned64 & (1 << i)); i--);
+		 i > 0 && !(smiValuePtr->value.unsigned64 & ((SmiUnsigned64)1 << i)); i--);
 	    s = smiMalloc(i + 1 + 1);
 	    if (s) {
 		for (j = 0; i >= 0; i--, j++) {
-		    s[j] = smiValuePtr->value.unsigned64 & (1<<i) ? '1' : '0';
+		    s[j] = smiValuePtr->value.unsigned64 & ((SmiUnsigned64)1<<i) ? '1' : '0';
 		}
 		s[j] = 0;
 	    }
@@ -2534,7 +2534,7 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 			    1 + i + (smiValuePtr->value.integer32 < 0 ? 1 : 0),
 			    smiValuePtr->value.integer32);
 		if (s) {
-		    for (j = strlen(s) - 1; i > 0; i--, j--) {
+		    for (j = (int)strlen(s) - 1; i > 0; i--, j--) {
 			s[j] = s[j-1];
 		    }
 		    s[j] = '.';
@@ -2589,7 +2589,7 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 			    1 + i + (smiValuePtr->value.integer64 < 0 ? 1 : 0),
 			    smiValuePtr->value.integer64);
 		if (s) {
-		    for (j = strlen(s) - 1; i > 0; i--, j--) {
+		    for (j = (int)strlen(s) - 1; i > 0; i--, j--) {
 			s[j] = s[j-1];
 		    }
 		    s[j] = '.';
@@ -2626,12 +2626,12 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 		j = 1;
 	    }
 	    for (i = 64 - 1;
-		 i > 0 && !(v64 & (1 << i)); i--);
+		 i > 0 && !(v64 & ((SmiUnsigned64)1 << i)); i--);
 	    s = smiMalloc(i + j + 1 + 1);
 	    if (s) {
 		s[0] = '-';
 		for (; i >= 0; i--, j++) {
-		    s[j] = v64 & (1<<i) ? '1' : '0';
+		    s[j] = v64 & ((SmiUnsigned64)1<<i) ? '1' : '0';
 		}
 		s[j] = 0;
 	    }
@@ -2741,7 +2741,7 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 			for (j = 0; k >= 0; k--, j++) {
 			    ss = s;
 			    smiAsprintf(&s, "%s%c",
-					ss, vv & (1 << k) ? '1' : '0');
+					ss, vv & ((SmiUnsigned64)1 << k) ? '1' : '0');
 			    smiFree(ss);
 			}
 			break;

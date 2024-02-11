@@ -124,7 +124,7 @@ checkDescr(Parser *parser, char *descr)
 static void
 checkNameLen(Parser *parser, char *name, int error_32, int error_64)
 {
-    int len = strlen(name);
+    size_t len = strlen(name);
     
     if (len > 64) {
 	smiPrintError(parser, error_64, name);
@@ -148,7 +148,7 @@ checkModuleName(Parser *parserPtr, Module *modulePtr)
      };
 
      const char *name = thisModulePtr->export.name;
-     const int len = strlen(name);
+     const int len = (int)strlen(name);
      int i;
 
      switch (modulePtr->export.language) {
@@ -498,7 +498,7 @@ checkObjects(Parser *parserPtr, Module *modulePtr)
 	 */
 	
 	if (objectPtr->export.nodekind == SMI_NODEKIND_ROW) {
-	    int len;
+	    size_t len;
 	    
 	    if (objectPtr->nodePtr->subid != 1) {
 		smiPrintErrorAtLine(parserPtr, ERR_ROW_SUBID_ONE,
@@ -610,7 +610,7 @@ checkObjects(Parser *parserPtr, Module *modulePtr)
 	}
 	
 	if (objectPtr->export.nodekind == SMI_NODEKIND_TABLE) {
-	    int len;
+	    size_t len;
 
 	    len = strlen(objectPtr->export.name);
 	    if (len < 6 || strcmp(objectPtr->export.name+len-5, "Table")) {
@@ -1206,7 +1206,7 @@ checkDate(Parser *parserPtr, char *date)
     memset(&tm, 0, sizeof(tm));
     anytime = 0;
     
-    len = strlen(date);
+    len = (int)strlen(date);
     if (len == 11 || len == 13) {
 	for (i = 0; i < len; i++) {
 	    if ( (i < len-1 && ! isdigit((int) date[i]))
@@ -4250,7 +4250,7 @@ valueofSimpleSyntax:	NUMBER			/* 0..2147483647 */
 			    $$ = smiMalloc(sizeof(SmiValue));
 			    if (defaultBasetype == SMI_BASETYPE_OCTETSTRING) {
 				$$->basetype = SMI_BASETYPE_OCTETSTRING;
-				len = strlen($1);
+				len = (int)strlen($1);
 				$$->value.ptr =
 				    smiMalloc((len+7)/8+1);
 				for (i = 0; i < len; i += 8) {
@@ -4276,7 +4276,7 @@ valueofSimpleSyntax:	NUMBER			/* 0..2147483647 */
 			    $$ = smiMalloc(sizeof(SmiValue));
 			    if (defaultBasetype == SMI_BASETYPE_OCTETSTRING) {
 				$$->basetype = SMI_BASETYPE_OCTETSTRING;
-				len = strlen($1);
+				len = (int)strlen($1);
 				$$->value.ptr = smiMalloc((len+1)/2+1);
 				for (i = 0; i < len; i += 2) {
 				    strncpy(s, &$1[i], 2);
@@ -4316,7 +4316,7 @@ valueofSimpleSyntax:	NUMBER			/* 0..2147483647 */
 			    $$ = smiMalloc(sizeof(SmiValue));
 			    $$->basetype = SMI_BASETYPE_OCTETSTRING;
 			    $$->value.ptr = (unsigned char *) smiStrdup($1);
-			    $$->len = strlen($1);
+			    $$->len = (unsigned)strlen($1);
 			}
 			/* NOTE: If the value is an OBJECT IDENTIFIER, then
 			 *       it must be expressed as a single ASN.1
@@ -5313,7 +5313,7 @@ value:			NEGATIVENUMBER
 			    $$ = smiMalloc(sizeof(SmiValue));
 			    if (defaultBasetype == SMI_BASETYPE_OCTETSTRING) {
 				$$->basetype = SMI_BASETYPE_OCTETSTRING;
-				len = strlen($1);
+				len = (int)strlen($1);
 				$$->value.ptr = smiMalloc((len+1)/2+1);
 				for (i = 0; i < len; i += 2) {
 				    strncpy(s, &$1[i], 2);
@@ -5336,7 +5336,7 @@ value:			NEGATIVENUMBER
 			    $$ = smiMalloc(sizeof(SmiValue));
 			    if (defaultBasetype == SMI_BASETYPE_OCTETSTRING) {
 				$$->basetype = SMI_BASETYPE_OCTETSTRING;
-				len = strlen($1);
+				len = (int)strlen($1);
 				$$->value.ptr = smiMalloc((len+7)/8+1);
 				for (i = 0; i < len; i += 8) {
 				    strncpy(s, &$1[i], 8);
@@ -5944,7 +5944,7 @@ Text:			QUOTED_STRING
 			{
 			    int len;
 			    $$ = smiStrdup($1);
-			    len = strlen($$);
+			    len = (int)strlen($$);
 			    while (len > 0 && $$[len-1] == '\n') {
 				$$[--len] = 0;
 			    }

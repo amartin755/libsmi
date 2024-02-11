@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-1999 Kungliga Tekniska Högskolan
+ * Copyright (c) 1995-1999 Kungliga Tekniska Hï¿½gskolan
  * (Royal Institute of Technology, Stockholm, Sweden).
  * All rights reserved.
  * 
@@ -101,7 +101,7 @@ static int
 as_reserve (struct state *state, size_t n)
 {
   if (state->s + n > state->theend) {
-    int off = state->s - state->str;
+    int off = (int)(state->s - state->str);
     unsigned char *tmp;
 
     if (state->max_sz && state->sz >= state->max_sz)
@@ -230,7 +230,7 @@ append_string (struct state *state,
   if(prec != -1)
     width -= prec;
   else
-    width -= strlen((char *)arg);
+    width -= (int)strlen((char *)arg);
   if(!(flags & minus_flag))
     while(width-- > 0)
       if((*state->append_char) (state, ' '))
@@ -431,7 +431,7 @@ xyzprintf (struct state *state, const char *char_format, va_list ap)
 	break;
       }
       case 'p' : {
-	unsigned long arg = (unsigned long)va_arg(ap, void*);
+	unsigned long arg = (unsigned long)(uintptr_t)va_arg(ap, void*);
 
 	if (append_number (state, arg, 0x10, "0123456789ABCDEF",
 			   width, prec, flags, 0))
@@ -440,7 +440,7 @@ xyzprintf (struct state *state, const char *char_format, va_list ap)
       }
       case 'n' : {
 	int *arg = va_arg(ap, int*);
-	*arg = state->s - state->str;
+	*arg = (int)(state->s - state->str);
 	break;
       }
       case '\0' :
@@ -600,7 +600,7 @@ vasnprintf (char **ret, size_t max_sz, const char *format, va_list args)
       return -1;
     }
     *ret = tmp;
-    return len;
+    return (int)len;
   }
 }
 #endif

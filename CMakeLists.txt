@@ -77,6 +77,8 @@ if (MSVC)
     add_compile_definitions (_CRT_SECURE_NO_WARNINGS)
     # disable warning about depracated POSIX symbols
     add_compile_options (/wd4996)
+    # needed to ensure that __STDC_VERSION__ is defined
+    add_compile_options (/std:c11)
 else ()
     add_compile_options (-Wall)
 endif()
