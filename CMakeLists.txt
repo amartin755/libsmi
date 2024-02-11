@@ -23,7 +23,7 @@ set (DEFAULT_ERRORLEVEL 3)
 set (MAX_LEX_DEPTH 30)
 option (BUILD_STATIC_LIB "Build static library instead of dynamic (shared object or dll)" ON)
 option (BACKEND_SMI "enable/disable SMIv1/v2 parser support, default enabled" ON)
-option (BACKEND_YANG "enable/disable YANG parser support, default enabled" ON)
+option (BACKEND_YANG "enable/disable YANG parser support, default disabled" OFF)
 option (BACKEND_SMING "enable/disable SMIng parser support, default disabled" OFF)
 if (NOT DIR_SEPARATOR)
     if (WIN32)
@@ -77,7 +77,8 @@ if (MSVC)
     add_compile_definitions (_CRT_SECURE_NO_WARNINGS)
     # disable warning about depracated POSIX symbols
     add_compile_options (/wd4996)
-
+else ()
+    add_compile_options (-Wall -Wextra)
 endif()
 
 # check dependencies
@@ -191,18 +192,22 @@ include_directories (lib)
 BISON_TARGET(smiparser lib/parser-smi.y ${CMAKE_CURRENT_BINARY_DIR}/parser-smi.c
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-smi.tab.h
     COMPILE_FLAGS "-t -psmi")
-BISON_TARGET(smingparser lib/parser-sming.y ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.c 
-    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.tab.h 
-    COMPILE_FLAGS "-t -psming")
-BISON_TARGET(yangparser lib/parser-yang.y ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.c 
-    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.tab.h 
-    COMPILE_FLAGS "-t -pyang")
 FLEX_TARGET(smiscanner lib/scanner-smi.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-smi.c
     COMPILE_FLAGS "-Cfe -Psmi")
-FLEX_TARGET(smingscanner lib/scanner-sming.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-sming.c
-    COMPILE_FLAGS "-Cfe -Psming")
-FLEX_TARGET(yangscanner lib/scanner-yang.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-yang.c
-    COMPILE_FLAGS "-Cfe -Pyang")
+if (BACKEND_YANG)
+    BISON_TARGET(yangparser lib/parser-yang.y ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.c 
+        DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.tab.h 
+        COMPILE_FLAGS "-t -pyang")
+    FLEX_TARGET(yangscanner lib/scanner-yang.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-yang.c
+        COMPILE_FLAGS "-Cfe -Pyang")
+endif ()
+if (BACKEND_SMING)
+    BISON_TARGET(smingparser lib/parser-sming.y ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.c 
+        DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.tab.h 
+        COMPILE_FLAGS "-t -psming")
+    FLEX_TARGET(smingscanner lib/scanner-sming.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-sming.c
+        COMPILE_FLAGS "-Cfe -Psming")
+endif()
 ADD_FLEX_BISON_DEPENDENCY (smiscanner smiparser)
 
 target_sources (smi PRIVATE
@@ -213,18 +218,23 @@ target_sources (smi PRIVATE
     lib/smi.c
     lib/smi-data.c
     lib/smi-check.c
-    lib/yang.c
-    lib/yang-data.c
-    lib/yang-check.c
-    lib/yang-complex-types.c
-    lib/smi2yang.c
     ${BISON_smiparser_OUTPUTS}
     ${BISON_smingparser_OUTPUTS}
-    ${BISON_yangparser_OUTPUTS}
     ${FLEX_smiscanner_OUTPUTS}
     ${FLEX_smingscanner_OUTPUTS}
-    ${FLEX_yangscanner_OUTPUTS}
 )
+
+if (BACKEND_YANG)
+    target_sources (smi PRIVATE
+        lib/yang.c
+        lib/yang-data.c
+        lib/yang-check.c
+        lib/yang-complex-types.c
+        lib/smi2yang.c
+        ${BISON_yangparser_OUTPUTS}
+        ${FLEX_yangscanner_OUTPUTS}
+)
+endif()
 
 set_target_properties (smi PROPERTIES PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/smi.h;lib/yang.h")
 install (TARGETS smi PUBLIC_HEADER DESTINATION include)
