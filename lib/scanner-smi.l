@@ -12,6 +12,7 @@
  */
 
 %option noyywrap
+%option noinput
 
 %{
 
