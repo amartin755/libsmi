@@ -12,7 +12,6 @@
  */
 
 %option noyywrap
-%option nounistd
 
 %{
 
