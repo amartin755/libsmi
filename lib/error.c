@@ -935,7 +935,7 @@ smiSetErrorHandler(SmiErrorHandler smiErrorHandler)
 int
 smiGetErrorSeverity(int id)
 {
-    if (id < 0 || id >= (sizeof(errors) / sizeof(Error)) - 1) {
+    if (id < 0 || (unsigned)id >= (sizeof(errors) / sizeof(Error)) - 1) {
 	return -1;
     }
     return errors[id].level;
@@ -961,7 +961,7 @@ smiGetErrorSeverity(int id)
 char*
 smiGetErrorTag(int id)
 {
-    if (id < 0 || id >= sizeof(errors) / sizeof(Error)) {
+    if (id < 0 || (unsigned)id >= sizeof(errors) / sizeof(Error)) {
 	return NULL;
     }
     return errors[id].tag;
@@ -988,7 +988,7 @@ smiGetErrorTag(int id)
 char*
 smiGetErrorMsg(int id)
 {
-    if (id < 0 || id >= sizeof(errors) / sizeof(Error)) {
+    if (id < 0 || (unsigned)id >= sizeof(errors) / sizeof(Error)) {
 	return NULL;
     }
     return errors[id].fmt;
@@ -1015,7 +1015,7 @@ smiGetErrorMsg(int id)
 char*
 smiGetErrorDescription(int id)
 {
-    if (id < 0 || id >= sizeof(errors) / sizeof(Error)) {
+    if (id < 0 || (unsigned)id >= sizeof(errors) / sizeof(Error)) {
 	return NULL;
     }
     return errors[id].description;
@@ -1043,7 +1043,7 @@ smiGetErrorDescription(int id)
  */
 
 void
-smiErrorHandler(char *path, int line, int severity, char *msg, char *tag)
+smiErrorHandler(char *path, int line, int severity, char *msg, char * /*tag*/)
 {
     if (path) {
 	fprintf(stderr, "%s:%d: ", path, line);

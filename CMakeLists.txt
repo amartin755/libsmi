@@ -78,7 +78,7 @@ if (MSVC)
     # disable warning about depracated POSIX symbols
     add_compile_options (/wd4996)
 else ()
-    add_compile_options (-Wall -Wextra)
+    add_compile_options (-Wall)
 endif()
 
 # check dependencies

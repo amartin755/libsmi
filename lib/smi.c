@@ -554,6 +554,8 @@ char *smiValueAsString(SmiValue *smiValue,
 	    /* xxx we need to handle UTF8 and what do we do about
 	       octet strings that contain true binary data? */
 	    break;
+	default:
+		break;
 	}
 	break;
     case SMI_BASETYPE_BITS:
@@ -909,14 +911,11 @@ extern _YangNode *loadYangModule(const char *modulename, const char *revision, P
 char *smiLoadModule(const char *module)
 {
     Module *modulePtr;
-    SmiLanguage lang;
     
     if (!smiHandle) smiInit(NULL);
     
-    lang = smiGuessModuleLanguage(module);
-
 #ifdef BACKEND_YANG
-    if (lang == SMI_LANGUAGE_YANG) {
+    if (smiGuessModuleLanguage(module) == SMI_LANGUAGE_YANG) {
         _YangNode *yangModulePtr = loadYangModule(module, NULL, NULL);
         if (yangModulePtr) {
             return yangModulePtr->export.value;
@@ -2611,10 +2610,11 @@ char *smiRenderValue(SmiValue *smiValuePtr, SmiType *smiTypePtr, int flags)
 	} else if (smiTypePtr->format[0] == 'o') {
 	    if (smiValuePtr->value.integer64 >= 0) {
 		strcpy(f, UINT64_FORMAT);
-		sprintf(f, "-%s", UINT64_FORMAT);
 		f[strlen(f)-1] = 'o';
 		smiAsprintf(&s, f, smiValuePtr->value.integer64);
 	    } else {
+		sprintf(f, "-%s", UINT64_FORMAT);
+		f[strlen(f)-1] = 'o';
 		smiAsprintf(&s, f, - smiValuePtr->value.integer64);
 	    }
 	} else if (smiTypePtr->format[0] == 'b') {
@@ -2997,7 +2997,7 @@ int smiUnpack(SmiNode *row, SmiSubid *oid, unsigned int oidlen,
     SmiElement *smiElement;
     SmiNode *iNode;
     SmiType *iType; 
-    int i, j, last = 0;
+    int i, j;
    
     if (!vals || !valslen || !row || !oid) {
 	return 0;
@@ -3039,7 +3039,6 @@ int smiUnpack(SmiNode *row, SmiSubid *oid, unsigned int oidlen,
     for (smiElement = smiGetFirstElement(indexNode), i = 0, j = 0;
 	 smiElement; smiElement = smiGetNextElement(smiElement), i++) {
 	iNode = smiGetElementNode(smiElement);
-	last = (smiGetNextElement(smiElement) == NULL);
 	iType = smiGetNodeType(iNode);
 	fprintf(stderr, "** %s (%s)\n", iNode->name, iType->name);
 	(*vals)[i].basetype = iType->basetype;

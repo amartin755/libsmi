@@ -885,6 +885,7 @@ smiCheckIndex(Parser *parser, Object *object)
 	case SMI_BASETYPE_FLOAT64:
 	case SMI_BASETYPE_FLOAT128:
 	case SMI_BASETYPE_UNKNOWN:
+	case SMI_BASETYPE_POINTER:
 	    smiPrintErrorAtLine(parser, ERR_INDEX_BASETYPE, object->line,
 				typePtr->export.name ? typePtr->export.name
 				                     : "[unknown]",
@@ -2081,8 +2082,8 @@ smiCheckNotificationMembers(Parser *parser, Object *object)
     Object *memberPtr;
 #if 0
     Node *parent = NULL;
-#endif
     Node *node = NULL;
+#endif
 
     for (listPtr = object->listPtr;
 	 listPtr; listPtr = listPtr->nextPtr) {
@@ -2091,12 +2092,16 @@ smiCheckNotificationMembers(Parser *parser, Object *object)
 
 	if (memberPtr->export.nodekind == SMI_NODEKIND_SCALAR) {
 	    if (memberPtr->nodePtr && memberPtr->nodePtr->parentPtr) {
+#if 0
 		node = memberPtr->nodePtr->parentPtr;
+#endif
 	    }
 	} else if (memberPtr->export.nodekind == SMI_NODEKIND_COLUMN) {
 	    if (memberPtr->nodePtr && memberPtr->nodePtr->parentPtr
 		&& memberPtr->nodePtr->parentPtr->parentPtr) {
+#if 0
 		node = memberPtr->nodePtr->parentPtr->parentPtr;
+#endif
 	    }
 	} else {
 	    smiPrintErrorAtLine(parser, ERR_NOTIFICATION_OBJECT_TYPE,
