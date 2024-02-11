@@ -165,8 +165,7 @@ set (INT64_TYPE "${INT64_T}")
 if (WIN32)
     if (MSVC)
         add_compile_definitions (strcasecmp=_stricmp)
-#        add_compile_definitions (isatty=_isatty)
-#        add_compile_definitions (fileno=_fileno)
+        set (FLEX_FLAGS "--wincompat")
     endif ()
     if (NOT HAVE_UNISTD_H)
         add_compile_definitions (F_OK=00)
@@ -193,20 +192,20 @@ BISON_TARGET(smiparser lib/parser-smi.y ${CMAKE_CURRENT_BINARY_DIR}/parser-smi.c
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-smi.tab.h
     COMPILE_FLAGS "-t -psmi")
 FLEX_TARGET(smiscanner lib/scanner-smi.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-smi.c
-    COMPILE_FLAGS "-Cfe -Psmi")
+    COMPILE_FLAGS "-Cfe -Psmi ${FLEX_FLAGS}")
 if (BACKEND_YANG)
     BISON_TARGET(yangparser lib/parser-yang.y ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.c 
         DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-yang.tab.h 
         COMPILE_FLAGS "-t -pyang")
     FLEX_TARGET(yangscanner lib/scanner-yang.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-yang.c
-        COMPILE_FLAGS "-Cfe -Pyang")
+        COMPILE_FLAGS "-Cfe -Pyang ${FLEX_FLAGS}")
 endif ()
 if (BACKEND_SMING)
     BISON_TARGET(smingparser lib/parser-sming.y ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.c 
         DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser-sming.tab.h 
         COMPILE_FLAGS "-t -psming")
     FLEX_TARGET(smingscanner lib/scanner-sming.l ${CMAKE_CURRENT_BINARY_DIR}/scanner-sming.c
-        COMPILE_FLAGS "-Cfe -Psming")
+        COMPILE_FLAGS "-Cfe -Psming ${FLEX_FLAGS}")
 endif()
 ADD_FLEX_BISON_DEPENDENCY (smiscanner smiparser)
 

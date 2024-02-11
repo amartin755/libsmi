@@ -258,9 +258,11 @@ int isInView(const char *modulename)
  */
 
 Module *addModule(char *modulename, char *path, ModuleFlags flags,
-		  Parser * /*parserPtr*/)
+		  Parser * parserPtr)
 {
     Module	      *modulePtr;
+
+	(void)parserPtr;
 
     modulePtr = (Module *) smiMalloc(sizeof(Module));
 

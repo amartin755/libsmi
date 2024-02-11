@@ -1043,8 +1043,9 @@ smiGetErrorDescription(int id)
  */
 
 void
-smiErrorHandler(char *path, int line, int severity, char *msg, char * /*tag*/)
+smiErrorHandler(char *path, int line, int severity, char *msg, char * tag)
 {
+  (void)tag;
     if (path) {
 	fprintf(stderr, "%s:%d: ", path, line);
     }
