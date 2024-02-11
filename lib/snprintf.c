@@ -46,6 +46,10 @@
 #include <dmalloc.h>
 #endif
 
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+
 #include "snprintf.h"
 
 #ifndef MIN
