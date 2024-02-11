@@ -25,6 +25,8 @@ option (BUILD_STATIC_LIB "Build static library instead of dynamic (shared object
 option (BACKEND_SMI "enable/disable SMIv1/v2 parser support, default enabled" ON)
 option (BACKEND_YANG "enable/disable YANG parser support, default disabled" OFF)
 option (BACKEND_SMING "enable/disable SMIng parser support, default disabled" OFF)
+option (WITH_ASAN "enable address sanitizer, default disabled" OFF)
+
 if (NOT DIR_SEPARATOR)
     if (WIN32)
         set (DIR_SEPARATOR "\\\\")
@@ -81,7 +83,11 @@ if (MSVC)
     add_compile_options (/std:c11)
 else ()
     add_compile_options (-Wall)
-endif()
+    if (WITH_ASAN)
+        add_compile_options (-fsanitize=address -fno-omit-frame-pointer)
+        link_libraries (-fsanitize=address)
+    endif ()
+endif ()
 
 # check dependencies
 ###############################################################################
