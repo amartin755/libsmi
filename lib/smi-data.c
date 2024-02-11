@@ -4202,7 +4202,7 @@ NamedNumber *findNamedNumberByName(Type *typePtr,const char *name)
 int smiInitData()
 {
     Object	    *objectPtr;
-    Parser	    parser;
+    static Parser parser;
     
     smiHandle->flags = 0;
     
