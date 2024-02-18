@@ -244,4 +244,5 @@ if (BACKEND_YANG)
 endif()
 
 set_target_properties (smi PROPERTIES PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/smi.h;lib/yang.h")
+install (TARGETS smi DESTINATION lib)
 install (TARGETS smi PUBLIC_HEADER DESTINATION include)
